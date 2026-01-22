@@ -2,154 +2,212 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TrendingUp, BarChart, Twitter, Activity, Layers, Repeat } from 'lucide-react';
+import { X, Send, ArrowUpRight, ArrowDownRight, Zap, Quote, Ghost } from 'lucide-react';
+import Link from 'next/link';
 
-export default function UltimateComparison() {
-  const [cryptoData, setCryptoData] = useState<any>(null);
-  const [muskQuote, setMuskQuote] = useState("");
-  const quotes = [
-    "Fate loves irony.",
+export default function MuskStyleHome() {
+  const [crypto, setCrypto] = useState<any>(null);
+  const [tradAssets, setTradAssets] = useState<any[]>([]);
+  const accentColor = "#ff751f";
+
+  // 马斯克语录池
+  const muskQuotes = [
+    "To be clear, I am not an investor. I am an engineer. I don't believe in MOATS.",
+    "Paper money is going away. Crypto is a far better way to transfer value than pieces of paper.",
     "The most entertaining outcome is the most likely.",
-    "Bitcoin is almost as bs as fiat money.",
-    "Doge to the moon!",
-    "Tesla will make some merch buyable with Doge & see how it goes."
+    "Too many smart people go into finance and law. We should have more people building things.",
+    "If you don't have a moat, you have to innovate fast. That's the only thing that matters.",
+    "Possessions just weigh you down. I'm selling almost all physical possessions. Will own no house.",
+    "Ancient legacy systems must be replaced by high-bandwidth truth."
   ];
 
-  // 1. 实时获取多币种数据 (BTC, ETH, DOGE)
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,dogecoin&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true');
-        setCryptoData(res.data);
-      } catch (e) {
-        console.error("Price fetch failed");
-      }
-    };
-    fetchData();
-    const interval = setInterval(fetchData, 30000);
-    
-    // 模拟马斯克推文轮播
-    let i = 0;
-    const quoteInterval = setInterval(() => {
-      setMuskQuote(quotes[i % quotes.length]);
-      i++;
-    }, 8000);
+  const [currentQuote, setCurrentQuote] = useState(muskQuotes[0]);
 
-    return () => {
-      clearInterval(interval);
-      clearInterval(quoteInterval);
+  const refreshQuote = () => {
+    const remaining = muskQuotes.filter(q => q !== currentQuote);
+    const random = remaining[Math.floor(Math.random() * remaining.length)];
+    setCurrentQuote(random);
+  };
+
+  // 抓取加密货币数据 (含跳动逻辑)
+  useEffect(() => {
+    const fetchCrypto = async () => {
+      try {
+        const res = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,dogecoin,monero&vs_currencies=usd&include_24hr_change=true');
+        setCrypto(res.data);
+      } catch (e) { console.error("Crypto API Error"); }
     };
+    fetchCrypto();
+    const interval = setInterval(fetchCrypto, 30000);
+    const flickerInterval = setInterval(() => {
+      setCrypto((prev: any) => {
+        if (!prev) return prev;
+        const newCrypto = { ...prev };
+        Object.keys(newCrypto).forEach(key => {
+          const basePrice = newCrypto[key].usd;
+          const flicker = 1 + (Math.random() - 0.5) * 0.0001; 
+          newCrypto[key].displayPrice = basePrice * flicker; 
+        });
+        return newCrypto;
+      });
+    }, 1000);
+    return () => { clearInterval(interval); clearInterval(flickerInterval); };
   }, []);
 
-  const brkaPrice = 615430; // 模拟伯克希尔价格
+  // 抓取 Python 后端美股数据
+  useEffect(() => {
+    const fetchTradData = async () => {
+      try {
+        const res = await axios.get('http://127.0.0.1:8000/api/legacy-assets');
+        setTradAssets(res.data);
+      } catch (e) { console.error("Legacy Signal Lost."); }
+    };
+    fetchTradData();
+    const interval = setInterval(fetchTradData, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-black selection:text-white">
-      {/* 顶部通栏 - 实时流动性滚动 */}
-      <div className="bg-black text-white py-2 overflow-hidden whitespace-nowrap text-[10px] uppercase tracking-widest font-bold">
-        <motion.div animate={{ x: [0, -1000] }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }} className="flex gap-10">
-          {[1,2,3,4].map(i => (
-            <span key={i}>BRK.A: $615,430 (STABLE) • BTC: ${cryptoData?.bitcoin?.usd} • ETH: ${cryptoData?.ethereum?.usd} • DOGE: ${cryptoData?.dogecoin?.usd} • GAS: 24 GWEI</span>
-          ))}
-        </motion.div>
+    <main className="pt-24 min-h-screen px-4 md:px-12 pb-20 bg-[#fffcf9]">
+      {/* Header */}
+      <header className="border-b-2 border-[#111111] pb-10 mb-16">
+        <div className="flex justify-between items-end mb-6 font-bold uppercase text-[12px] tracking-widest">
+          <div className="text-[#ff751f]">Real-time Efficiency Index</div>
+          <div>Post-Buffett Era // V1.0.5</div>
+        </div>
+        <h1 className="text-6xl md:text-[100px] font-black uppercase tracking-tighter leading-none">
+          POST <span style={{ color: accentColor }}>BUFFETT</span>
+        </h1>
+      </header>
+
+      {/* 中部数据展示区 */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-16">
+        {/* 左侧：旧金融 */}
+        <div className="lg:col-span-5 border-t-4 border-[#111111] pt-6 flex flex-col">
+          <h2 className="text-xs font-black uppercase tracking-[0.3em] mb-10 opacity-50 italic">
+            Legacy Allocation (Slow)
+          </h2>
+          <div className="space-y-12">
+            {tradAssets.length > 0 ? tradAssets.map(s => (
+              <div key={s.name} className="flex justify-between items-end border-b border-black/10 pb-4">
+                <div>
+                  <div className="text-2xl font-black tracking-tight">{s.name}</div>
+                  <div className={`text-[10px] font-bold flex items-center gap-1 uppercase ${s.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {s.change >= 0 ? <ArrowUpRight size={14}/> : <ArrowDownRight size={14}/>} 
+                    {Math.abs(s.change)}% / {s.status}
+                  </div>
+                </div>
+                <motion.div 
+                  key={s.price}
+                  initial={{ backgroundColor: s.change >= 0 ? "rgba(22, 163, 74, 0.1)" : "rgba(220, 38, 38, 0.1)" }}
+                  animate={{ backgroundColor: "transparent" }}
+                  className="font-mono text-xl font-bold p-1 rounded"
+                >
+                  ${s.price.toLocaleString()}
+                </motion.div>
+              </div>
+            )) : <div className="font-mono text-sm animate-pulse">CONNECTING TO LEGACY NODES...</div>}
+          </div>
+        </div>
+
+        {/* 右侧：Web3 数据 */}
+        <div className="lg:col-span-7 border-t-4 border-[#ff751f] pt-6">
+          <div className="flex justify-between items-center mb-10">
+            <h2 className="text-xs font-black uppercase tracking-[0.3em]" style={{ color: accentColor }}>
+              The Speed of Light (Web3)
+            </h2>
+            <div className="flex gap-2">
+              <a href="https://x.com" target="_blank" className="p-2 border border-black hover:bg-black hover:text-white transition-all"><X size={16}/></a>
+              <a href="https://t.me" target="_blank" className="p-2 border border-black hover:bg-black hover:text-white transition-all"><Send size={16}/></a>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {crypto ? Object.keys(crypto).map(key => (
+              <div key={key} className="p-8 border-2 border-[#111111] hover:shadow-[8px_8px_0px_0px_#ff751f] transition-all bg-white relative overflow-hidden group">
+                <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <Zap size={80} />
+                </div>
+                <div className="text-[10px] font-black uppercase tracking-widest mb-4 opacity-40">{key} / Reality</div>
+                <div className="text-4xl font-black tracking-tighter mb-4 font-mono">
+                  ${(crypto[key].displayPrice || crypto[key].usd).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </div>
+                <div className="text-green-600 font-black flex items-center gap-1 uppercase text-[10px]">
+                  <ArrowUpRight size={14} strokeWidth={3}/> {crypto[key].usd_24h_change?.toFixed(2)}% Efficiency
+                </div>
+              </div>
+            )) : <div className="font-mono font-bold animate-pulse uppercase text-sm">Syncing with nodes...</div>}
+          </div>
+        </div>
       </div>
 
-      <main className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
-        
-        {/* --- 左侧：THE OLD GUARD (巴菲特) --- */}
-        <section className="p-8 md:p-16 border-r border-slate-100 flex flex-col justify-between bg-[#FCFAF5]">
-          <div>
-            <div className="flex items-center gap-2 mb-12 opacity-50">
-              <BarChart size={16} />
-              <span className="text-xs font-bold tracking-tighter uppercase font-mono">Archive / 20th Century Financials</span>
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-serif font-black tracking-tighter leading-none mb-6">
-              The <br/>Value <br/>Oracle.
-            </h1>
-            <p className="text-slate-400 font-serif italic text-xl max-w-sm mb-12">
-              "If you offered me all the Bitcoin in the world for $25, I wouldn't take it."
-            </p>
-
-            <div className="space-y-8">
-              <div className="border-b border-slate-200 pb-4">
-                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Anchor Asset</p>
-                <div className="flex justify-between items-baseline font-serif">
-                  <span className="text-2xl font-bold italic">Berkshire Hathaway</span>
-                  <span className="text-3xl">${brkaPrice.toLocaleString()}</span>
-                </div>
-              </div>
-              <div className="border-b border-slate-200 pb-4">
-                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Growth Index</p>
-                <div className="flex justify-between items-baseline font-serif">
-                  <span className="text-2xl font-bold italic">S&P 500 Legacy</span>
-                  <span className="text-xl text-slate-400">Steady & Boring</span>
-                </div>
-              </div>
-            </div>
+      {/* 底部交互区：语录 + CTA 并排 */}
+      <div className="flex flex-col lg:flex-row gap-8 items-stretch mb-20">
+        {/* 马斯克语录 */}
+        <div 
+          onClick={refreshQuote}
+          className="flex-1 p-8 border-2 border-[#111111] bg-white relative cursor-pointer group hover:bg-[#fff1e5] transition-colors shadow-[4px_4px_0px_0px_#111111] hover:shadow-none hover:translate-x-1 hover:translate-y-1"
+        >
+          <Quote className="absolute -top-4 -left-4 bg-[#fff1e5] p-1 group-hover:rotate-12 transition-transform" size={32} />
+          <div className="min-h-[100px] flex items-center">
+            <AnimatePresence mode="wait">
+              <motion.p 
+                key={currentQuote}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                transition={{ duration: 0.2 }}
+                className="text-xl font-bold leading-tight italic text-[#111111]"
+              >
+                "{currentQuote}"
+              </motion.p>
+            </AnimatePresence>
           </div>
-
-          <div className="mt-20 text-[10px] font-mono text-slate-300 uppercase tracking-widest">
-            Institutional Custody Required • Slow Settlement
+          <div className="mt-4 flex justify-between items-center border-t border-black/5 pt-4">
+            <div className="text-xs font-black uppercase tracking-widest">— Elon Musk</div>
+            <div className="text-[8px] font-bold opacity-30 uppercase animate-pulse italic underline">Click to Refresh Signal</div>
           </div>
-        </section>
-
-        {/* --- 右侧：THE NEW FRONTIER (Web3 / 马斯克) --- */}
-        <section className="p-8 md:p-16 bg-white flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-2 mb-12 text-orange-600">
-              <Activity size={16} className="animate-pulse" />
-              <span className="text-xs font-bold tracking-tighter uppercase font-mono">Live / On-Chain Reality</span>
-            </div>
-
-            <h2 className="text-5xl md:text-7xl font-sans font-black tracking-tighter leading-none mb-10 italic uppercase">
-              The <br/><span className="text-orange-600">Rat</span> <br/>Poison.
-            </h2>
-
-            {/* 实时数据网格 */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
-              <div className="p-6 bg-slate-50 border border-slate-100 rounded-none relative overflow-hidden group">
-                <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Bitcoin (BTC)</p>
-                <p className="text-3xl font-black font-mono tracking-tighter">${cryptoData?.bitcoin?.usd.toLocaleString()}</p>
-                <div className={`text-xs font-bold mt-1 ${cryptoData?.bitcoin?.usd_24h_change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                   {cryptoData?.bitcoin?.usd_24h_change.toFixed(2)}%
-                </div>
-                <Layers className="absolute -bottom-2 -right-2 opacity-5 text-slate-900 group-hover:scale-110 transition-transform" size={60} />
-              </div>
-
-              <div className="p-6 bg-slate-50 border border-slate-100 rounded-none">
-                <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 font-mono leading-none">Dogecoin (DOGE)</p>
-                <p className="text-3xl font-black font-mono tracking-tighter">${cryptoData?.dogecoin?.usd.toFixed(4)}</p>
-                <div className="text-xs font-bold mt-1 text-green-600">VIBRANT</div>
-              </div>
-            </div>
-
-            {/* 马斯克言论打字机效果 */}
-            <div className="bg-black text-white p-6 rounded-none relative">
-              <Twitter size={20} className="text-blue-400 mb-4" />
-              <AnimatePresence mode='wait'>
-                <motion.p 
-                  key={muskQuote}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="text-lg font-mono font-bold leading-tight"
-                >
-                  "{muskQuote}"
-                </motion.p>
-              </AnimatePresence>
-              <div className="mt-4 flex gap-4 opacity-40 text-[10px] font-mono">
-                <span className="flex items-center gap-1"><Repeat size={10}/> 42.0K</span>
-                <span className="flex items-center gap-1"><Activity size={10}/> 6.9M Views</span>
-              </div>
-            </div>
-          </div>
-
-          <button className="mt-20 w-full py-4 bg-orange-600 text-white font-black text-sm uppercase tracking-widest hover:bg-black transition-colors shadow-2xl">
-            Exit the Matrix
-          </button>
         </div>
-      </section>
-    </div>
+
+        {/* CTA 入口 */}
+        <div className="lg:w-7/12 bg-[#111111] text-white p-10 flex flex-col md:flex-row justify-between items-center gap-8 shadow-[8px_8px_0px_0px_#ff751f]">
+          <div className="max-w-xs text-center md:text-left">
+            <h3 className="text-2xl font-black uppercase tracking-tight mb-2 italic">Read the Logic</h3>
+            <p className="text-[10px] uppercase font-bold tracking-widest opacity-60 italic leading-relaxed">
+              Deconstructing the 20th century finance myths. Ancient systems must be replaced.
+            </p>
+          </div>
+          <div className="flex gap-4 w-full md:w-auto">
+            <Link href="/token" className="flex-1 md:flex-none text-center bg-white text-black px-8 py-4 font-black uppercase text-xs tracking-[0.1em] hover:bg-[#ff751f] transition-colors whitespace-nowrap">
+              Tokenomics
+            </Link>
+            <Link href="/manifesto" className="flex-1 md:flex-none text-center bg-[#ff751f] text-black px-8 py-4 font-black uppercase text-xs tracking-[0.1em] hover:bg-white transition-colors whitespace-nowrap">
+              Manifesto
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="border-t-2 border-[#111111] pt-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-[10px] font-black uppercase tracking-widest">
+        <div className="opacity-40">
+           © 2026 Post Buffett. INVESTING IN THE FUTUER.
+        </div>
+        <div className="flex flex-row gap-6 justify-center">
+          <div className="flex items-center gap-2">
+            <Ghost size={14} className="opacity-50"/> 
+            <span>INFLATION: 100%</span>
+          </div>
+          <div className="flex items-center gap-2 text-[#ff751f]">
+            <Zap size={14}/> 
+            <span>RAT_POISON: LETHAL</span>
+          </div>
+        </div>
+        <div className="flex justify-end gap-6">
+          <Link href="/manifesto" className="hover:text-[#ff751f] transition-colors underline">Manifesto</Link>
+          <Link href="/token" className="hover:text-[#ff751f] transition-colors underline">Tokenomics</Link>
+        </div>
+      </footer>
+    </main>
   );
 }
