@@ -6,8 +6,8 @@ import threading
 import time
 
 # 代理设置（如果你的网络能直连，可以把这两行删掉）
-os.environ['HTTP_PROXY'] = 'http://127.0.0.1:7890'
-os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:7890'
+#os.environ['HTTP_PROXY'] = 'http://127.0.0.1:7890'
+#os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:7890'
 
 app = FastAPI()
 
