@@ -73,7 +73,7 @@ export default function MuskStyleHome() {
   useEffect(() => {
     const fetchTradData = async () => {
       try {
-        const res = await axios.get('/api/market-data')
+        const res = await axios.get('/api/legacy-assets')
         setTradAssets(res.data);
       } catch (e) { console.error("Legacy Signal Lost."); }
     };
