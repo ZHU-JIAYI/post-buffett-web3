@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, ArrowUpRight, ArrowDownRight, Zap, Quote, Ghost } from 'lucide-react';
+import { X, Send, ArrowUpRight, ArrowDownRight, Zap, Quote, Ghost, Monitor } from 'lucide-react';
 import Link from 'next/link';
+import { span } from 'framer-motion/client';
 
 export default function MuskStyleHome() {
   const [crypto, setCrypto] = useState<any>(null);
@@ -29,7 +30,21 @@ export default function MuskStyleHome() {
     setCurrentQuote(random);
   };
 
-  // 抓取加密货币数据 (含跳动逻辑)
+  // 1. 处理 X (Twitter) 脚本加载
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://platform.twitter.com/widgets.js";
+    script.async = true;
+    script.setAttribute("charset", "utf-8");
+    document.body.appendChild(script);
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
+
+  // 2. 抓取加密货币数据 (含跳动逻辑)
   useEffect(() => {
     const fetchCrypto = async () => {
       try {
@@ -54,26 +69,26 @@ export default function MuskStyleHome() {
     return () => { clearInterval(interval); clearInterval(flickerInterval); };
   }, []);
 
-  // 抓取 Python 后端美股数据
+  // 3. 抓取 Python 后端美股数据 (已适配 Alpha Vantage)
   useEffect(() => {
     const fetchTradData = async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:8000/api/legacy-assets');
+        const res = await axios.get('/api/market-data')
         setTradAssets(res.data);
       } catch (e) { console.error("Legacy Signal Lost."); }
     };
     fetchTradData();
-    const interval = setInterval(fetchTradData, 30000);
+    const interval = setInterval(fetchTradData, 60000); // 1分钟刷新一次，适配 Alpha Vantage 频率
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <main className="pt-24 min-h-screen px-4 md:px-12 pb-20 bg-[#fffcf9]">
+    <main className="pt-24 min-h-screen px-4 md:px-12 pb-20 bg-[#fffcf9] text-[#111111]">
       {/* Header */}
       <header className="border-b-2 border-[#111111] pb-10 mb-16">
         <div className="flex justify-between items-end mb-6 font-bold uppercase text-[12px] tracking-widest">
           <div className="text-[#ff751f]">Real-time Efficiency Index</div>
-          <div>Post-Buffett Era // V1.0.5</div>
+          <div>Post-Buffett Era // V1.0.6</div>
         </div>
         <h1 className="text-6xl md:text-[100px] font-black uppercase tracking-tighter leading-none">
           POST <span style={{ color: accentColor }}>BUFFETT</span>
@@ -103,10 +118,10 @@ export default function MuskStyleHome() {
                   animate={{ backgroundColor: "transparent" }}
                   className="font-mono text-xl font-bold p-1 rounded"
                 >
-                  ${s.price.toLocaleString()}
+                  {s.price === "N/A" ? "SYNCING..." : `$${s.price.toLocaleString()}`}
                 </motion.div>
               </div>
-            )) : <div className="font-mono text-sm animate-pulse">CONNECTING TO LEGACY NODES...</div>}
+            )) : <div className="font-mono text-sm animate-pulse">CONNECTING TO ALPHA_VANTAGE NODES...</div>}
           </div>
         </div>
 
@@ -117,8 +132,8 @@ export default function MuskStyleHome() {
               The Speed of Light (Web3)
             </h2>
             <div className="flex gap-2">
-              <a href="https://x.com" target="_blank" className="p-2 border border-black hover:bg-black hover:text-white transition-all"><X size={16}/></a>
-              <a href="https://t.me" target="_blank" className="p-2 border border-black hover:bg-black hover:text-white transition-all"><Send size={16}/></a>
+              <a href="https://x.com/elonmusk" target="_blank" className="p-2 border border-black hover:bg-black hover:text-white transition-all"><X size={16}/></a>
+              <a href="#" className="p-2 border border-black hover:bg-black hover:text-white transition-all"><Send size={16}/></a>
             </div>
           </div>
 
@@ -142,8 +157,7 @@ export default function MuskStyleHome() {
       </div>
 
       {/* 底部交互区：语录 + CTA 并排 */}
-      <div className="flex flex-col lg:flex-row gap-8 items-stretch mb-20">
-        {/* 马斯克语录 */}
+      <div className="flex flex-col lg:flex-row gap-8 items-stretch mb-16">
         <div 
           onClick={refreshQuote}
           className="flex-1 p-8 border-2 border-[#111111] bg-white relative cursor-pointer group hover:bg-[#fff1e5] transition-colors shadow-[4px_4px_0px_0px_#111111] hover:shadow-none hover:translate-x-1 hover:translate-y-1"
@@ -169,7 +183,6 @@ export default function MuskStyleHome() {
           </div>
         </div>
 
-        {/* CTA 入口 */}
         <div className="lg:w-7/12 bg-[#111111] text-white p-10 flex flex-col md:flex-row justify-between items-center gap-8 shadow-[8px_8px_0px_0px_#ff751f]">
           <div className="max-w-xs text-center md:text-left">
             <h3 className="text-2xl font-black uppercase tracking-tight mb-2 italic">Read the Logic</h3>
@@ -188,10 +201,44 @@ export default function MuskStyleHome() {
         </div>
       </div>
 
+      {/* --- Elon Musk Twitter Monitor Feed --- */}
+      <section className="mb-20">
+        <div className="border-2 border-[#111111] bg-white shadow-[8px_8px_0px_0px_#111111]">
+          <div className="bg-[#111111] text-white px-4 py-2 flex justify-between items-center">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em]">
+              <Monitor size={14} className="text-[#ff751f] animate-pulse" />
+              Satellite_Link: @elonmusk_X_Feed
+            </div>
+            <div className="flex gap-1">
+              <div className="w-2 h-2 rounded-full bg-[#ff751f]/50"></div>
+              <div className="w-2 h-2 rounded-full bg-[#ff751f]"></div>
+            </div>
+          </div>
+          
+          <div className="p-4 max-h-[500px] overflow-y-auto bg-white">
+            <a 
+              className="twitter-timeline" 
+              data-height="450" 
+              data-theme="light" 
+              data-chrome="noheader nofooter noborders transparent"
+              href="https://twitter.com/elonmusk?ref_src=twsrc%5Etfw"
+            >
+              <div className="flex flex-col items-center justify-center py-20 font-mono text-xs uppercase opacity-40 animate-pulse text-black">
+                <Zap size={24} className="mb-2" />
+                Establishing_Neural_Link...
+              </div>
+            </a>
+          </div>
+          <div className="border-t border-black/10 p-2 bg-[#fffcf9] text-center text-[8px] font-black uppercase opacity-30 italic">
+            Direct Transmission // Starlink_V3_Active
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t-2 border-[#111111] pt-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-[10px] font-black uppercase tracking-widest">
         <div className="opacity-40">
-           © 2026 Post Buffett. INVESTING IN THE FUTUER.
+           © 2026 Post Buffett. INVESTING IN THE FUTURE.
         </div>
         <div className="flex flex-row gap-6 justify-center">
           <div className="flex items-center gap-2">
