@@ -16,6 +16,12 @@ from urllib3.util.retry import Retry
 
 #os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:7890' 
 
+try:
+    test = requests.get("https://google.com", timeout=5)
+    print("网络已打通，Google 返回状态码:", test.status_code)
+except:
+    print("网络仍处于封闭状态，请检查代理设置或服务器位置。")
+
 
 # 增强型 Session 配置
 session = requests.Session()
@@ -107,6 +113,8 @@ def fetch_crypto_data():
             print(f"!!! Crypto Sync Failed: {e}")
         time.sleep(60) # 延长到60秒，避免被封IP
 
+
+"""
 def fetch_tweet_data():
     global cache_tweet_data
     
@@ -120,6 +128,7 @@ def fetch_tweet_data():
 
     # 备用节点列表（rsshub.app 经常挂，多备几个）
     nodes = [
+        "https://platform.twitter.com/widgets.js",
         "https://rsshub.moeyy.cn/twitter/user/elonmusk.json",
         "https://rss.dragonegg.zip/twitter/user/elonmusk.json",
         "https://rsshub.app/twitter/user/elonmusk.json"
@@ -163,13 +172,13 @@ def fetch_tweet_data():
         if not success:
             print("!!! 所有推特同步节点均无响应，等待下一轮重试。")
             
-        time.sleep(600) # 10分钟同步一次，别太频繁
+        time.sleep(600) # 10分钟同步一次，别太频繁"""
 
 
 # 启动双后台线程
 threading.Thread(target=fetch_stock_data, daemon=True).start()
 threading.Thread(target=fetch_crypto_data, daemon=True).start()
-threading.Thread(target=fetch_tweet_data, daemon=True).start()
+#threading.Thread(target=fetch_tweet_data, daemon=True).start()
 
 
 # --- 接口模块 (独立化) ---

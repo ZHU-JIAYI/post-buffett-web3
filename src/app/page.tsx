@@ -9,7 +9,7 @@ import { span } from 'framer-motion/client';
 export default function MuskStyleHome() {
   const [crypto, setCrypto] = useState<any>(null);
   const [tradAssets, setTradAssets] = useState<any[]>([]);
-  const [tweets, setTweets] = useState<any[]>([]); // 存储后端传来的推文
+  //const [tweets, setTweets] = useState<any[]>([]); // 存储后端传来的推文
   const accentColor = "#ff751f";
 
 
@@ -35,17 +35,16 @@ export default function MuskStyleHome() {
   
   // 1. 处理 X (Twitter) 脚本加载
   useEffect(() => {
-    const loadTweets = async () => {
-      try {
-        const res = await axios.get('/api/tweets-proxy'); // 对应后端新写的接口
-        setTweets(res.data);
-      } catch (e) {
-        console.error("Satellite Signal Lost.");
+    const script = document.createElement("script");
+    script.src = "https://platform.twitter.com/widgets.js";
+    script.async = true;
+    script.setAttribute("charset", "utf-8");
+    document.body.appendChild(script);
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
       }
     };
-    loadTweets();
-    const interval = setInterval(loadTweets, 600000); // 10分钟更新一次
-    return () => clearInterval(interval);
   }, []);
 
 
@@ -233,37 +232,22 @@ export default function MuskStyleHome() {
             </div>
           </div>
           
-          {/* 关键修改：不再使用 twitter-timeline 类 */}
-          <div className="p-6 max-h-[500px] overflow-y-auto bg-white space-y-8 custom-scrollbar">
-            {tweets.length > 0 ? tweets.map((t, idx) => (
-              <div key={idx} className="border-l-2 border-[#ff751f] pl-6 py-2 group">
-                <div className="flex items-center gap-2 text-[9px] font-black text-black/40 uppercase mb-3 tracking-widest">
-                  <X size={10} /> {t.author} // {t.date}
-                </div>
-                
-                <div 
-                  className="text-sm font-bold text-[#111111] mb-4 leading-relaxed tracking-tight"
-                  dangerouslySetInnerHTML={{ __html: t.text }} // 渲染后端抓取的推文内容
-                />
-                
-                <a 
-                  href={t.url} 
-                  target="_blank" 
-                  className="inline-flex items-center gap-1 text-[8px] font-black text-[#ff751f] uppercase hover:underline"
-                >
-                  Decrypt_Full_Transmission <ArrowUpRight size={10} />
-                </a>
-              </div>
-            )) : (
+          <div className="p-4 max-h-[500px] overflow-y-auto bg-white">
+            <a 
+              className="twitter-timeline" 
+              data-height="450" 
+              data-theme="light" 
+              data-chrome="noheader nofooter noborders transparent"
+              href="https://twitter.com/elonmusk?ref_src=twsrc%5Etfw"
+            >
               <div className="flex flex-col items-center justify-center py-20 font-mono text-xs uppercase opacity-40 animate-pulse text-black">
                 <Zap size={24} className="mb-2" />
                 Establishing_Neural_Link...
               </div>
-            )}
+            </a>
           </div>
-
           <div className="border-t border-black/10 p-2 bg-[#fffcf9] text-center text-[8px] font-black uppercase opacity-30 italic">
-            Backend_Relay_Active // No_JS_Required
+            Direct Transmission // Starlink_V3_Active
           </div>
         </div>
       </section>
