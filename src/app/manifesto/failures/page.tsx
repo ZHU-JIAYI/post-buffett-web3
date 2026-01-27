@@ -11,7 +11,7 @@ export default function FailureLogsPage() {
       fault: "RAT POISON SQUARED",
       loss: "∞ OPPORTUNITY COST",
       logic: "PURE NGMI ENERGY. MISTOOK A DECENTRALIZED SETTLEMENT LAYER FOR 'FINANCIAL TRASH'. IMAGINE CALLING THE TOP-PERFORMING ASSET OF THE CENTURY 'POISON' WHILE CLUTCHING DEPRECIATING FIAT. HFSP.",
-      //status: "BOOMER_LOGIC_OVERFLOW",
+      status: "",
       isCritical: true 
     },
     {
@@ -20,7 +20,7 @@ export default function FailureLogsPage() {
       fault: "CIRCLE_OF_COMPETENCE_LIMIT",
       loss: "$150B+ INVISIBLE DEBT",
       logic: "STUCK IN THE 20TH-CENTURY 'PHYSICAL MOAT' PROTOCOL. FAILED TO SYNC WITH NETWORK EFFECTS AND CLOUD LEVERAGE. THE SYSTEM PARSES RAILROADS, NOT THE TOTALITARIAN SCALE OF SOFTWARE PLATFORMS.",
-      //status: "KERNEL_OUTDATED"
+      status: ""
     },
     {
       id: "ERR_EXIT_003",
@@ -28,7 +28,7 @@ export default function FailureLogsPage() {
       fault: "EARLY_EXIT_SYNDROME",
       loss: "$30B+ ALPHA LEAK",
       logic: "PAPER HANDS DETECTED. LIQUIDATED THE ECOSYSTEM WHILE THE WALLED GARDEN WAS STILL IN THE EXPANSION PHASE. EVEN THE ORACLE GETS SPOOKED BY THE VOLATILITY HE CLAIMS TO IGNORE.",
-      //status: "WEAK_HODL_SIGNAL"
+      status: ""
     }
   ];
 
