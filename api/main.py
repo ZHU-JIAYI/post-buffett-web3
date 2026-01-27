@@ -88,7 +88,7 @@ def fetch_stock_data():
                         "name": display_name,
                         "price": round(d["c"], 2),
                         "change": round(d.get("dp", 0), 2),
-                        "status": "STAGNANT" if abs(d.get("dp", 0)) < 1 else "VOLATILE"
+                        #"status": "STAGNANT" if abs(d.get("dp", 0)) < 1 else "VOLATILE"
                     })
             except Exception as e:
                 print(f"美股 {symbol} 抓取失败: {e}")

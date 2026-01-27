@@ -51,7 +51,7 @@ export default function TokenComingSoon() {
               <Activity size={14} className="animate-pulse" /> Signal_Detected
             </div>
             <div className="font-mono text-[10px] font-bold opacity-40 uppercase">
-              Phase: Initializing_Liquidity
+              
             </div>
           </div>
 

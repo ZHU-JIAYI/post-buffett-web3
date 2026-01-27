@@ -16,7 +16,7 @@ export default function ManifestoPage() {
       title: "Annual Shareholder Letters",
       description: "Full repository of Omaha's paper-based doctrine. Original PDF transcripts of the yearly Oracle addresses.",
       type: "ARCHIVE",
-      icon: <BookOpen size={20} />,
+      //icon: <BookOpen size={20} />,
       link: "/manifesto/letters"
     },
     { 
@@ -25,7 +25,7 @@ export default function ManifestoPage() {
       title: "Shareholder Meeting Minutes",
       description: "Direct records of the live Q&A sessions. Tracking the evolution of anti-crypto sentiment in real-time.",
       type: "HISTORICAL",
-      icon: <FileText size={20} />,
+      //icon: <FileText size={20} />,
       link: "/manifesto/meetings"
     },
     { 
@@ -34,7 +34,7 @@ export default function ManifestoPage() {
       title: "The Oracle's Aphorisms",
       description: "A database of famous quotes. Deciphering the 20th-century wisdom that built the moat.",
       type: "INTEL",
-      icon: <MessageSquare size={20} />,
+      //icon: <MessageSquare size={20} />,
       link: "/manifesto/aphorisms"
     },
     { 
@@ -110,8 +110,7 @@ export default function ManifestoPage() {
             "I can promise you that if you could buy every farm in the United States... I would not give you $25 for all the Bitcoin in the world."
           </p>
           <div className="flex justify-between items-end font-bold text-[10px] uppercase tracking-widest">
-            <div>Source: Annual Shareholders Meeting</div>
-            <div className="text-[#ff751f]">Unchanged Consensus</div>
+            <div className="text-[#ff751f]">Source: Annual Shareholders Meeting</div>
           </div>
         </section>
 

@@ -117,7 +117,7 @@ export default function MuskStyleHome() {
         {/* 左侧：旧金融 */}
         <div className="lg:col-span-5 border-t-4 border-[#111111] pt-6 flex flex-col">
           <h2 className="text-xs font-black uppercase tracking-[0.3em] mb-10 opacity-50 italic">
-            Legacy Allocation (Slow)
+            Legacy Allocation
           </h2>
           <div className="space-y-12">
             {tradAssets.length > 0 ? tradAssets.map(s => (
@@ -146,29 +146,35 @@ export default function MuskStyleHome() {
         <div className="lg:col-span-7 border-t-4 border-[#ff751f] pt-6">
           <div className="flex justify-between items-center mb-10">
             <h2 className="text-xs font-black uppercase tracking-[0.3em]" style={{ color: accentColor }}>
-              The Speed of Light (Web3)
+              The Speed of Light
             </h2>
-            <div className="flex gap-2">
-              <a href="https://x.com/elonmusk" target="_blank" className="p-2 border border-black hover:bg-black hover:text-white transition-all"><X size={16}/></a>
-              <a href="#" className="p-2 border border-black hover:bg-black hover:text-white transition-all"><Send size={16}/></a>
-            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {crypto ? Object.keys(crypto).map(key => (
-              <div key={key} className="p-8 border-2 border-[#111111] hover:shadow-[8px_8px_0px_0px_#ff751f] transition-all bg-white relative overflow-hidden group">
-                <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <Zap size={80} />
+            {crypto ? Object.keys(crypto).map(key => {
+              // --- 修改这里：判断 Dogecoin 精度 ---
+              const precision = key.toLowerCase() === 'dogecoin' ? 6 : 3;
+              const price = crypto[key].displayPrice || crypto[key].usd;
+              
+              return (
+                <div key={key} className="p-8 border-2 border-[#111111] hover:shadow-[8px_8px_0px_0px_#ff751f] transition-all bg-white relative overflow-hidden group">
+                  <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                    <Zap size={80} />
+                  </div>
+                  <div className="text-[10px] font-black uppercase tracking-widest mb-4 opacity-40">{key}</div>
+                  <div className="text-4xl font-black tracking-tighter mb-4 font-mono">
+                    {/* 使用自定义精度渲染价格 */}
+                    ${price.toLocaleString(undefined, { 
+                      minimumFractionDigits: precision, 
+                      maximumFractionDigits: precision 
+                    })}
+                  </div>
+                  <div className="text-green-600 font-black flex items-center gap-1 uppercase text-[10px]">
+                    <ArrowUpRight size={14} strokeWidth={3}/> {crypto[key].usd_24h_change?.toFixed(2)}% 
+                  </div>
                 </div>
-                <div className="text-[10px] font-black uppercase tracking-widest mb-4 opacity-40">{key} / Reality</div>
-                <div className="text-4xl font-black tracking-tighter mb-4 font-mono">
-                  ${(crypto[key].displayPrice || crypto[key].usd).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                </div>
-                <div className="text-green-600 font-black flex items-center gap-1 uppercase text-[10px]">
-                  <ArrowUpRight size={14} strokeWidth={3}/> {crypto[key].usd_24h_change?.toFixed(2)}% Efficiency
-                </div>
-              </div>
-            )) : <div className="font-mono font-bold animate-pulse uppercase text-sm">Syncing with nodes...</div>}
+              );
+            }) : <div className="font-mono font-bold animate-pulse uppercase text-sm">Syncing...</div>}
           </div>
         </div>
       </div>
@@ -196,7 +202,7 @@ export default function MuskStyleHome() {
           </div>
           <div className="mt-4 flex justify-between items-center border-t border-black/5 pt-4">
             <div className="text-xs font-black uppercase tracking-widest">— Elon Musk</div>
-            <div className="text-[8px] font-bold opacity-30 uppercase animate-pulse italic underline">Click to Refresh Signal</div>
+            <div className="text-[8px] font-bold opacity-30 uppercase animate-pulse italic underline"></div>
           </div>
         </div>
 
@@ -207,11 +213,11 @@ export default function MuskStyleHome() {
               Deconstructing the 20th century finance myths. Ancient systems must be replaced.
             </p>
           </div>
-          <div className="flex gap-4 w-full md:w-auto">
-            <Link href="/token" className="flex-1 md:flex-none text-center bg-white text-black px-8 py-4 font-black uppercase text-xs tracking-[0.1em] hover:bg-[#ff751f] transition-colors whitespace-nowrap">
+          <div className="flex flex-wrap gap-4 w-full md:w-auto">
+            <Link href="/token" className="flex-1 md:flex-none text-center bg-white text-black px-4 md:px-8 py-4 font-black uppercase text-xs tracking-[0.1em] hover:bg-[#ff751f] transition-colors">
               Tokenomics
             </Link>
-            <Link href="/manifesto" className="flex-1 md:flex-none text-center bg-[#ff751f] text-black px-8 py-4 font-black uppercase text-xs tracking-[0.1em] hover:bg-white transition-colors whitespace-nowrap">
+            <Link href="/manifesto" className="flex-1 md:flex-none text-center bg-[#ff751f] text-black px-4 md:px-8 py-4 font-black uppercase text-xs tracking-[0.1em] hover:bg-white transition-colors">
               Manifesto
             </Link>
           </div>
@@ -267,9 +273,9 @@ export default function MuskStyleHome() {
             <span>RAT_POISON: LETHAL</span>
           </div>
         </div>
-        <div className="flex justify-end gap-6">
-          <Link href="/manifesto" className="hover:text-[#ff751f] transition-colors underline">Manifesto</Link>
+        <div className="flex flex-row gap-6 justify-center">
           <Link href="/token" className="hover:text-[#ff751f] transition-colors underline">Tokenomics</Link>
+          <Link href="/manifesto" className="hover:text-[#ff751f] transition-colors underline">Manifesto</Link>
         </div>
       </footer>
     </main>

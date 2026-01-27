@@ -11,7 +11,7 @@ export default function FailureLogsPage() {
       fault: "RAT POISON SQUARED",
       loss: "∞ OPPORTUNITY COST",
       logic: "PURE NGMI ENERGY. MISTOOK A DECENTRALIZED SETTLEMENT LAYER FOR 'FINANCIAL TRASH'. IMAGINE CALLING THE TOP-PERFORMING ASSET OF THE CENTURY 'POISON' WHILE CLUTCHING DEPRECIATING FIAT. HFSP.",
-      status: "BOOMER_LOGIC_OVERFLOW",
+      //status: "BOOMER_LOGIC_OVERFLOW",
       isCritical: true 
     },
     {
@@ -20,7 +20,7 @@ export default function FailureLogsPage() {
       fault: "CIRCLE_OF_COMPETENCE_LIMIT",
       loss: "$150B+ INVISIBLE DEBT",
       logic: "STUCK IN THE 20TH-CENTURY 'PHYSICAL MOAT' PROTOCOL. FAILED TO SYNC WITH NETWORK EFFECTS AND CLOUD LEVERAGE. THE SYSTEM PARSES RAILROADS, NOT THE TOTALITARIAN SCALE OF SOFTWARE PLATFORMS.",
-      status: "KERNEL_OUTDATED"
+      //status: "KERNEL_OUTDATED"
     },
     {
       id: "ERR_EXIT_003",
@@ -28,7 +28,7 @@ export default function FailureLogsPage() {
       fault: "EARLY_EXIT_SYNDROME",
       loss: "$30B+ ALPHA LEAK",
       logic: "PAPER HANDS DETECTED. LIQUIDATED THE ECOSYSTEM WHILE THE WALLED GARDEN WAS STILL IN THE EXPANSION PHASE. EVEN THE ORACLE GETS SPOOKED BY THE VOLATILITY HE CLAIMS TO IGNORE.",
-      status: "WEAK_HODL_SIGNAL"
+      //status: "WEAK_HODL_SIGNAL"
     }
   ];
 
@@ -38,9 +38,6 @@ export default function FailureLogsPage() {
         
         {/* Header: Back to Vibrant Orange */}
         <header className="mb-24 border-b-4 border-black pb-10">
-          <div className="flex items-center gap-2 text-[#ff751f] mb-4 font-black text-[10px] uppercase tracking-[0.4em]">
-            <Activity size={14} className="animate-pulse" /> Legacy_System_Faults // 0.00% Web3_Sync
-          </div>
           <h1 className="text-6xl md:text-[100px] font-black uppercase tracking-tighter leading-none mb-6">
             FAILURE <span className="text-[#ff751f]">LOGS</span>
           </h1>
@@ -132,7 +129,7 @@ export default function FailureLogsPage() {
             
             <div className="mt-16 w-full flex justify-between items-end border-t border-white/10 pt-8">
               <div className="text-[10px] font-black opacity-40 uppercase tracking-widest">
-                Protocol: Post_Buffett_v2.0 // Terminal_Exit
+                Protocol: Post_Buffett
               </div>
               <div className="flex gap-4">
                 <div className="w-2 h-2 bg-[#ff751f]"></div>
